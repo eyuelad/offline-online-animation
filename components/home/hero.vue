@@ -29,7 +29,7 @@
 
       <div
         id="sun"
-        class="w-12 h-12 absolute top-32 left-1/2 -translate-x-1/2 translate-y-0 rounded-full bg-amber-200 shadow-lg shadow-amber-300/50"
+        class="w-16 h-16 absolute top-32 left-1/2 -translate-x-1/2 translate-y-0 rounded-full bg-amber-200 shadow-lg shadow-amber-300/50"
       ></div>
       <div
         id="moon"
