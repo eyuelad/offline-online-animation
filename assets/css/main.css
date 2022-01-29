@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn {
+    @apply bg-sky-50 text-sky-900 rounded-full py-8 px-12 font-medium duration-500  shadow-sky-800/20;
+  }
+}
+
