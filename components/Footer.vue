@@ -5,9 +5,8 @@
       <a
         class="font-bold underline text-sky-100"
         href="http://eyuelad.github.io"
+        >Eyuel Solomon</a
       >
-        Eyuel Solomon
-      </a>
       2022
     </div>
   </footer>
