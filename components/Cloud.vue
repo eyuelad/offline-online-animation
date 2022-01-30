@@ -51,12 +51,6 @@ export default {
     },
   },
   mounted() {
-    console.log(
-      this.index % 2
-        ? window.innerWidth / 2 - window.innerWidth / (this.index + 1) - 100
-        : window.innerWidth / 2 + window.innerWidth / (this.index + 1) + 100
-    )
-
     gsap.set('.cloud-circle-' + (this.index + 1), {
       left:
         this.index % 2
