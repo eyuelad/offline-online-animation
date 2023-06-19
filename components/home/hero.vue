@@ -100,7 +100,7 @@ export default {
   methods: {
     async checkConnection() {
       try {
-        const response = await fetch('/check.txt', {
+        const response = await fetch('./check.txt', {
           cache: 'no-store',
         })
 
