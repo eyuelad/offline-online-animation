@@ -2,11 +2,11 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
   router: {
-    base: '/theme-switch-animation/',
+    base: '/offline-online-animation/',
   },
 
   head: {
-    title: 'Theme Switch Animation',
+    title: 'Offline Online Animation',
     htmlAttrs: {
       lang: 'en',
     },
@@ -16,7 +16,7 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: 'Sweet theme switch animation.',
+        content: 'A theme switch animation triggered by the network status.',
       },
       { name: 'format-detection', content: 'telephone=no' },
     ],

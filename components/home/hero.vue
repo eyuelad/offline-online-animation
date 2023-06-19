@@ -7,12 +7,12 @@
       <div
         id="light-bg"
         class="absolute top-0 left-0 h-screen w-screen bg-gradient-to-b from-sky-400 to-sky-500 transition-all duration-[1.5s]"
-        :class="isDark ? 'opacity-0' : 'opacity-100'"
+        :class="isOffline ? 'opacity-0' : 'opacity-100'"
       ></div>
       <div
         id="dark-bg"
         class="absolute top-0 left-0 h-screen w-screen bg-gradient-to-b from-slate-800 to-slate-900 transition-all duration-[1.5s]"
-        :class="!isDark ? 'opacity-0' : 'opacity-100'"
+        :class="!isOffline ? 'opacity-0' : 'opacity-100'"
       >
         <div
           v-for="(star, i) in 30"
@@ -31,8 +31,20 @@
       ></div>
 
       <div
+        class="toast toast--offline absolute z-10 top-16 left-1/2 -translate-x-1/2 translate-y-0 px-4 py-3 rounded-md border border-red-500 bg-sky-900 text-red-500 font-medium"
+      >
+        You are offline
+      </div>
+
+      <div
+        class="toast toast--online absolute z-10 top-16 left-1/2 -translate-x-1/2 translate-y-0 px-4 py-3 rounded-md border border-green-500 bg-sky-50 text-green-600 font-medium"
+      >
+        You are back online 😀
+      </div>
+
+      <div
         class="absolute top-0 left-0 h-screen w-screen transition-all duration-[1.5s]"
-        :class="isDark ? 'opacity-10' : 'opacity-80'"
+        :class="isOffline ? 'opacity-10' : 'opacity-80'"
       >
         <Cloud
           v-for="(cloud, i) in 8"
@@ -44,13 +56,12 @@
 
       <div class="relative">
         <div>
-          <h1
-            class="p-6 mb-6 md:mb-12 text-sky-50 text-3xl md:text-6xl font-bold"
-          >
-            Sweet Theme Switching Animation
+          <h1 class="p-6 mb-6 text-sky-50 text-4xl md:text-6xl font-bold">
+            Turn {{ isOffline ? 'on' : 'off' }} your network connection.
           </h1>
 
-          <button class="btn" @click="toggleTheme">Switch</button>
+          <div class="my-8 text-sky-100 font-medium text-lg">- OR -</div>
+          <button class="btn" @click="toggleTheme">Click here</button>
         </div>
       </div>
 
@@ -63,10 +74,15 @@
 export default {
   data() {
     return {
-      isDark: false,
+      isOffline: false,
     }
   },
   mounted() {
+    var self = this
+    window.addEventListener('offline', this.toggleTheme)
+
+    window.addEventListener('online', this.toggleTheme)
+
     this.randomizeStars()
 
     gsap.to('.star', {
@@ -79,9 +95,17 @@ export default {
     })
   },
   methods: {
-    toggleTheme() {
-      this.animate()
-      this.isDark = !this.isDark
+    toggleTheme(e) {
+      const isNetwork = e?.type == 'offline' || e?.type == 'online'
+
+      if (
+        (e?.type == 'offline' && this.isOffline) ||
+        (e?.type == 'online' && !this.isOffline)
+      ) {
+        return
+      }
+      this.animate({ showAlert: isNetwork })
+      this.isOffline = !this.isOffline
     },
     randomizeStars() {
       gsap.set('.star', {
@@ -89,8 +113,12 @@ export default {
         y: `random(0,${window.innerHeight / 2})`,
       })
     },
-    animate() {
-      if (this.isDark) {
+    animate({ showAlert }) {
+      if (this.isOffline) {
+        const toast = document.querySelector('.toast--online')
+
+        showAlert && toast.classList.add('toast--show')
+
         gsap.to('#sun', {
           y: 0,
           duration: 1.2,
@@ -103,7 +131,15 @@ export default {
           },
           duration: 0.6,
         })
+
+        setTimeout(() => {
+          toast.classList.remove('toast--show')
+        }, 2500)
       } else {
+        const toast = document.querySelector('.toast--offline')
+
+        showAlert && toast.classList.add('toast--show')
+
         this.randomizeStars()
         gsap.to('#moon', {
           y: 0,
@@ -117,8 +153,27 @@ export default {
           },
           duration: 0.6,
         })
+
+        setTimeout(() => {
+          toast.classList.remove('toast--show')
+        }, 2500)
       }
     },
   },
 }
 </script>
+
+<style>
+.toast {
+  transition: all 0.5s ease-in;
+  translate: 0% -10px;
+  scale: 0.98;
+  opacity: 0;
+}
+
+.toast--show {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+}
+</style>
