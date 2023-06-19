@@ -31,13 +31,13 @@
       ></div>
 
       <div
-        class="toast toast--offline absolute z-10 top-16 left-1/2 -translate-x-1/2 translate-y-0 px-4 py-3 rounded-md border border-red-500 bg-sky-900 text-red-500 font-medium"
+        class="toast toast--offline absolute z-10 top-12 left-1/2 px-4 py-3 rounded-md border border-red-500 bg-sky-900/75 text-red-500 font-medium whitespace-nowrap"
       >
         You are offline
       </div>
 
       <div
-        class="toast toast--online absolute z-10 top-16 left-1/2 -translate-x-1/2 translate-y-0 px-4 py-3 rounded-md border border-green-500 bg-sky-50 text-green-600 font-medium"
+        class="toast toast--online absolute z-10 top-12 left-1/2 px-4 py-3 rounded-md border border-green-500 bg-sky-50/75 text-green-600 font-medium whitespace-nowrap"
       >
         You are back online 😀
       </div>
@@ -78,7 +78,6 @@ export default {
     }
   },
   mounted() {
-    var self = this
     window.addEventListener('offline', this.toggleTheme)
 
     window.addEventListener('online', this.toggleTheme)
@@ -114,10 +113,11 @@ export default {
       })
     },
     animate({ showAlert }) {
-      if (this.isOffline) {
-        const toast = document.querySelector('.toast--online')
+      const onlineToast = document.querySelector('.toast--online')
+      const offlineToast = document.querySelector('.toast--offline')
 
-        showAlert && toast.classList.add('toast--show')
+      if (this.isOffline) {
+        offlineToast.classList.remove('toast--show')
 
         gsap.to('#sun', {
           y: 0,
@@ -132,13 +132,12 @@ export default {
           duration: 0.6,
         })
 
+        showAlert && onlineToast.classList.add('toast--show')
         setTimeout(() => {
-          toast.classList.remove('toast--show')
-        }, 2500)
+          onlineToast.classList.remove('toast--show')
+        }, 3000)
       } else {
-        const toast = document.querySelector('.toast--offline')
-
-        showAlert && toast.classList.add('toast--show')
+        onlineToast.classList.remove('toast--show')
 
         this.randomizeStars()
         gsap.to('#moon', {
@@ -154,9 +153,10 @@ export default {
           duration: 0.6,
         })
 
+        showAlert && offlineToast.classList.add('toast--show')
         setTimeout(() => {
-          toast.classList.remove('toast--show')
-        }, 2500)
+          offlineToast.classList.remove('toast--show')
+        }, 3000)
       }
     },
   },
@@ -165,15 +165,13 @@ export default {
 
 <style>
 .toast {
-  transition: all 0.5s ease-in;
-  translate: 0% -10px;
-  scale: 0.98;
+  transition: all 0.4s ease 0.5s;
+  transform: translate(-50%, -10px) scale(0.98);
   opacity: 0;
 }
 
 .toast--show {
   opacity: 1;
-  translate: 0 0;
-  scale: 1;
+  transform: translate(-50%, 0) scale(1);
 }
 </style>
