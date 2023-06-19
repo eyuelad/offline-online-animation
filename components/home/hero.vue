@@ -78,9 +78,13 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener('offline', this.toggleTheme)
+    setInterval(async () => {
+      const online = await this.checkConnection()
 
-    window.addEventListener('online', this.toggleTheme)
+      if (online == this.isOffline) {
+        this.toggleTheme({ isNetwork: true })
+      }
+    }, 5000)
 
     this.randomizeStars()
 
@@ -94,15 +98,18 @@ export default {
     })
   },
   methods: {
-    toggleTheme(e) {
-      const isNetwork = e?.type == 'offline' || e?.type == 'online'
+    async checkConnection() {
+      try {
+        const response = await fetch('/check.txt', {
+          cache: 'no-store',
+        })
 
-      if (
-        (e?.type == 'offline' && this.isOffline) ||
-        (e?.type == 'online' && !this.isOffline)
-      ) {
-        return
+        return response.status >= 200 && response.status < 300
+      } catch (error) {
+        return false
       }
+    },
+    toggleTheme({ isNetwork }) {
       this.animate({ showAlert: isNetwork })
       this.isOffline = !this.isOffline
     },
