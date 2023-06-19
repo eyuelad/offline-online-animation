@@ -61,7 +61,7 @@
           </h1>
 
           <div class="my-8 text-sky-100 font-medium text-lg">- OR -</div>
-          <button class="btn" @click="toggleTheme">Click here</button>
+          <button class="btn" @click="onManualTrigger()">Click here</button>
         </div>
       </div>
 
@@ -75,16 +75,11 @@ export default {
   data() {
     return {
       isOffline: false,
+      checkInterval: null,
     }
   },
   mounted() {
-    setInterval(async () => {
-      const online = await this.checkConnection()
-
-      if (online == this.isOffline) {
-        this.toggleTheme({ isNetwork: true })
-      }
-    }, 5000)
+    this.start()
 
     this.randomizeStars()
 
@@ -98,6 +93,15 @@ export default {
     })
   },
   methods: {
+    start() {
+      this.checkInterval = setInterval(async () => {
+        const online = await this.checkConnection()
+
+        if (online == this.isOffline) {
+          this.toggleTheme({ isNetwork: true })
+        }
+      }, 5000)
+    },
     async checkConnection() {
       AbortSignal.timeout = function timeout(ms) {
         const ctrl = new AbortController()
@@ -116,7 +120,7 @@ export default {
         return false
       }
     },
-    toggleTheme({ isNetwork }) {
+    toggleTheme({ isNetwork } = {}) {
       this.animate({ showAlert: isNetwork })
       this.isOffline = !this.isOffline
     },
@@ -125,6 +129,11 @@ export default {
         x: `random(10,${window.innerWidth - 10})`,
         y: `random(0,${window.innerHeight / 2})`,
       })
+    },
+    onManualTrigger() {
+      this.toggleTheme()
+      clearInterval(this.checkInterval)
+      this.start()
     },
     animate({ showAlert }) {
       const onlineToast = document.querySelector('.toast--online')
