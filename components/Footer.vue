@@ -7,7 +7,7 @@
         href="http://eyuelad.github.io"
         >Eyuel Solomon</a
       >
-      2022
+      2023
     </div>
   </footer>
 </template>
