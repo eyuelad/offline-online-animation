@@ -99,9 +99,16 @@ export default {
   },
   methods: {
     async checkConnection() {
+      AbortSignal.timeout = function timeout(ms) {
+        const ctrl = new AbortController()
+        setTimeout(() => ctrl.abort(), ms)
+        return ctrl.signal
+      }
+
       try {
         const response = await fetch('./check.txt', {
           cache: 'no-store',
+          signal: AbortSignal.timeout(8000),
         })
 
         return response.status >= 200 && response.status < 300
